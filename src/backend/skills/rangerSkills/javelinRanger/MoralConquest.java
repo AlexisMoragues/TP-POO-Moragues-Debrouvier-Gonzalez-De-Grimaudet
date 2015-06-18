@@ -29,30 +29,20 @@ public class MoralConquest extends SkillTarget{
 			throw new NullPointerException();
 		}
 		Piece myselfPiece=startingTile.getPiece();
-		for (int i=-MORAL_CONQUEST_DIMENSION; i<=MORAL_CONQUEST_DIMENSION; i++){
-			for(int j=-MORAL_CONQUEST_DIMENSION; j<=MORAL_CONQUEST_DIMENSION; j++){
-			
-				if(startingTile.getPositionX()+i>=0 && startingTile.getPositionX()+i<match.getHeight()){
-				
-					if(startingTile.getPositionY()+j>=0 && startingTile.getPositionY()+j<match.getWidth()){
-					
-						Piece newTargetPiece = match.getPiece(match.getTile(targetTile.getPositionX()+i, targetTile.getPositionY()+j));
-						
-						if(newTargetPiece!=null){
-							if(newTargetPiece.getTeam() == myselfPiece.getTeam()){
+		for(Tile newTargetTile: areaOfEffect.getAreaOfEffect(startingTile, targetTile, match)){
+			Piece newTargetPiece = newTargetTile.getPiece();
+			if(newTargetPiece!=null){
+				if(newTargetPiece.getTeam() == myselfPiece.getTeam()){
 
-								newTargetPiece.modifyAttackModifier(MORAL_CONQUEST_ALLY_ATTACKMODIFIER);
-							}
-							else{
-								newTargetPiece.modifyAttackModifier(MORAL_CONQUEST_ENEMY_ATTACKMODIFIER);
-							}
-							if(i==0 && j==0){
-								newTargetPiece.receiveDamage((int) (MORAL_CONQUEST_DAMAGE*myselfPiece.getAttackModifier()*newTargetPiece.getDmgRecievedModifier()));
-								newTargetPiece.resetDmgReceivedModifier();
-								myselfPiece.resetAttackModifier();	
-							}
-						}
-					}
+					newTargetPiece.modifyAttackModifier(MORAL_CONQUEST_ALLY_ATTACKMODIFIER);
+				}
+				else{
+					newTargetPiece.modifyAttackModifier(MORAL_CONQUEST_ENEMY_ATTACKMODIFIER);
+				}
+				if(targetTile==newTargetTile){
+					newTargetPiece.receiveDamage((int) (MORAL_CONQUEST_DAMAGE*myselfPiece.getAttackModifier()*newTargetPiece.getDmgRecievedModifier()));
+					newTargetPiece.resetDmgReceivedModifier();
+					myselfPiece.resetAttackModifier();	
 				}
 			}
 		}
